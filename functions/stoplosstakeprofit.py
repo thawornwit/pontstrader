@@ -429,7 +429,7 @@ def stoplosstakeprofit(key, secret, pushover_user, pushover_app, pushbullet_toke
                   done = True
                   break
               else:
-                message = '{0}: {1} | Buy price {2:.8f} | Price {3:.8f} | Target: {4:.8f} | Profit {5:.2f}% (excl. fee)'.format(thread_name, currency, buyprice, ask, target, profit_percentage)
+                message = '{0}: {1} | Price {3:.8f} | Buy price {2:.8f} | Stop Loss: {6:.8f} | Target: {4:.8f} | Profit {5:.2f}% (excl. fee)'.format(thread_name, currency, buyprice, ask, target, profit_percentage, stoploss)
                 messages[thread_name] = message
 
         if done == True:
