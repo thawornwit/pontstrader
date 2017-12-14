@@ -33,7 +33,7 @@ def watch(key, secret, redis_password):
         values = r.hmget(market, 'Ask')
         start_price = float(values[0])
       except:
-        print 'Unable to retrieve data from redis.pontstrader.com'
+        print 'Currency not available... or unable to retrieve data from redis.pontstrader.com'
       else:
         while not self._stopevent.isSet( ):
           try:
