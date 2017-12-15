@@ -217,13 +217,39 @@ def stoplosstakeprofit(key, secret, pushover_user, pushover_app, pushbullet_toke
     print (Fore.YELLOW +'- Ask:              {0:.8f}'.format(float(values[0])))
     print (Fore.YELLOW +'- Bid:              {0:.8f}'.format(float(values[9])))
     print (40 * '-')
+
     try:
-      stoploss = raw_input('Stop Loss? [eg. 0.00436] : ')
-      stoploss = float(stoploss)
+      print 'Configure Stop Loss and Target in satoshi or percentage?'
+      print (Fore.GREEN +'1. Satoshi')
+      print (Fore.YELLOW +'2. Percentage')
+      satorper = raw_input('Enter your choice [1-2] : ')
+      satorper = int(satorper)
+      print (40 * '-')
     except:
       print '\nInvalid number... going back to Main Menu'
       time.sleep(1)
       break
+    else:
+      if satorper == 1:
+        try:
+          stoploss = raw_input('Stop Loss? [eg. 0.00436] : ')
+          stoploss = float(stoploss)
+        except:
+          print '\nInvalid number... going back to Main Menu'
+          time.sleep(1)
+          break
+      elif satorper == 2:
+        try:
+          stoploss = raw_input('Stop Loss percentage (without %)? [eg. 5] : ')
+          stoploss = float(stoploss)
+        except:
+          print '\nInvalid number... going back to Main Menu'
+          time.sleep(1)
+          break
+      else:
+        print '\nInvalid number... going back to Main Menu'
+        time.sleep(1)
+        break
 
     if oneortwotargets == True:
       pass
@@ -251,18 +277,41 @@ def stoplosstakeprofit(key, secret, pushover_user, pushover_app, pushbullet_toke
 #      print (Fore.YELLOW +'Because the price could have changed during your input...')
 #      print (Fore.YELLOW +'Pontstrader wil calculate new targets and stop loss based on the buyprice.')
     else:
-      try:
-        target = raw_input('Target? 100% of the trade value will be sold here [eg. 0.00436] : ')
-        target = float(target)
-      except:
+      if satorper == 1:
+        try:
+          target = raw_input('Target? 100% of the trade value will be sold here [eg. 0.00436] : ')
+          target = float(target)
+        except:
+          print '\nInvalid number... going back to Main Menu'
+          time.sleep(1)
+          break
+      elif satorper == 2:
+        try:
+          target = raw_input('Target in percentage (without %)?  [eg. 5] : ')
+          target = float(target)
+        except:
+          print '\nInvalid number... going back to Main Menu'
+          time.sleep(1)
+          break
+      else:
         print '\nInvalid number... going back to Main Menu'
         time.sleep(1)
         break
       print (40 * '-')
       print (Fore.GREEN +'   B U Y  I N F O R M A T I O N')
       print (Fore.YELLOW +'- Buyprice:               {0:.8f}'.format(float(values[0])))
-      print (Fore.YELLOW +'- Target:                 {0:.8f}'.format(float(target)))
-      print (Fore.YELLOW +'- Stop Loss:              {0:.8f}'.format(float(stoploss)))
+      if satorper == 1:
+        print (Fore.YELLOW +'- Stop Loss:              {0:.8f}'.format(float(stoploss)))
+        print (Fore.YELLOW +'- Target:                 {0:.8f}'.format(float(target)))
+      elif satorper == 2:
+        stop_per = float(stoploss)
+        tar_per = float(target)
+        stoploss_percentage = float(values[0]) / 100 * float(stoploss)
+        target_percentage = float(values[0]) / 100 * float(target)
+        stoploss = float(values[0]) - float(stoploss_percentage)
+        target = float(values[0]) + float(target_percentage)
+        print (Fore.YELLOW +'- Stop Loss:              {0:.8f} ({1:.2f}%)'.format(float(stoploss), float(stop_per)))
+        print (Fore.YELLOW +'- Target:                 {0:.8f} ({1:.2f}%)'.format(float(target), float(tar_per)))
       print (40 * '-')
       print (Fore.YELLOW +'Because the price could have changed during your input, the buyprice may differ a little from the above prices!')
     
