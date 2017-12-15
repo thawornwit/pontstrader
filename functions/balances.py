@@ -72,7 +72,7 @@ def balances(key, secret, redis_password):
         print 'Invalid input, refreshing in 5 seconds... (to prevent spam)'
         time.sleep(5)
     except:
-      print 'Bittrex API error: {0}'.format(get_balances)
+      print 'Bittrex API error'
       print 'Going back to Main Menu'
       time.sleep(2)
       break
