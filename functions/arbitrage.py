@@ -5,18 +5,18 @@ def arbitrage(redis_password):
   import time, json, sys, requests, operator, threading, redis
   from pprint import pprint
   from time import gmtime, strftime
+  from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
-  init(autoreset=True)
   try:
     r_bittrex = redis.Redis(host='redis.pontstrader.com', port=6380, db=0, password=redis_password)
     r_hitbtc = redis.Redis(host='redis.pontstrader.com', port=6380, db=1, password=redis_password)
   except:
-    print 'Unable to connect to redis.pontstrader.com, trying redis2.pontstrader.com...'
+    white('Unable to connect to redis.pontstrader.com, trying redis2.pontstrader.com...')
     try:
       r_bittrex = redis.Redis(host='redis2.pontstrader.com', port=6380, db=0, password=redis_password)
       r_hitbtc = redis.Redis(host='redis2.pontstrader.com', port=6380, db=1, password=redis_password)
     except:
-      print 'Unable to connect to redis2.pontstrader.com... I am sorry but you can not continue now, please contact p0nts!'
+      white('Unable to connect to redis2.pontstrader.com... I am sorry but you can not continue now, please contact p0nts!')
   
   while True:
     def apiconnect():
@@ -35,19 +35,19 @@ def arbitrage(redis_password):
         hitbtc_api = requests.get('https://api.hitbtc.com/api/2/public/symbol')
         hitbtc_ticker = requests.get('https://api.hitbtc.com/api/2/public/ticker')
       except:
-        print 'HitBTC API error: {0}'.format(hitbtc_api)
+        white('HitBTC API error: {0}'.format(hitbtc_api))
       try:
         polo_api = requests.get('https://poloniex.com/public?command=returnTicker')
       except:
-        print 'Poloniex API error: {0}'.format(polo_api)
+        white('Poloniex API error: {0}'.format(polo_api))
       try:
         binance_api = requests.get('https://www.binance.com/api/v1/ticker/allBookTickers')
       except:
-        print 'Poloniex API error: {0}'.format(binance_api)
+        white('Poloniex API error: {0}'.format(binance_api))
       try:
         bitfinex_api = requests.get('https://api.bitfinex.com/v1/symbols')
       except:
-        print 'Bitfinex API error: {0}'.format(bitfinex_api)
+        white('Bitfinex API error: {0}'.format(bitfinex_api))
   
       global bittrex_markets
       global hitbtc_markets
@@ -250,7 +250,7 @@ def arbitrage(redis_password):
         url = 'https://api.bitfinex.com/v2/tickers?symbols={0}'.format(coins)
         bitfinex_symbols = requests.get(url)
       except:
-        print 'Bitfinex API error: {0}'.format(bitfinex_symbols)
+        white('Bitfinex API error: {0}'.format(bitfinex_symbols))
       for coin in bitfinex_symbols.json():
         if coin[0].endswith('BTC'):
           bitfinex_currency = coin[0].rsplit('BTC', 1)[0][1:]
@@ -412,19 +412,19 @@ def arbitrage(redis_password):
           add_dict = {'market': coin, 'from': frm, 'to':to, 'ask': ask, 'bid': bid, 'percentage': percentage}
           sort_percentage.append(dict(add_dict))
   
-    print (30 * '-')
-    print(Fore.GREEN +'   A R B I T R A G E')
-    print (30 * '-')
-    print ('From what Exchange?')
-    print(Fore.YELLOW +'1. Bittrex')
-    print(Fore.YELLOW +'2. HitBTC')
-    print(Fore.YELLOW +'3. Poloniex')
-    print(Fore.YELLOW +'4. Binance')
-    print(Fore.YELLOW +'5. Bitfinex')
-    print(Fore.GREEN +'6. All')
-    print(Fore.RED +'7. Back to Main Menu')
+    white((30 * '-'))
+    green('   A R B I T R A G E')
+    white((30 * '-'))
+    white('From what Exchange?')
+    yellow('1. Bittrex')
+    yellow('2. HitBTC')
+    yellow('3. Poloniex')
+    yellow('4. Binance')
+    yellow('5. Bitfinex')
+    green('6. All')
+    red('7. Back to Main Menu')
     try:
-      choice = raw_input('Enter your choice [1-7] : ')
+      choice = raw_input(Fore.WHITE+'Enter your choice [1-7] : ')
       print (30 * '-')
       choice = int(choice)
       if choice == 1:
@@ -440,19 +440,19 @@ def arbitrage(redis_password):
       elif choice == 6:
         exchange = 'All'
       elif choice == 7:
-        print 'Going back to Main Menu'
+        white('Going back to Main Menu')
         break
     except:
-      print 'ERROR: Please select a number!'
+      white('ERROR: Please select a number!')
       break
-    print ('What Market?')
-    print(Fore.YELLOW +'1. BTC')
-    print(Fore.YELLOW +'2. ETH')
-    print(Fore.YELLOW +'3. USDT')
-    print(Fore.GREEN +'4. All')
-    print(Fore.RED +'5. Exit to Main Menu')
+    white('What Market?')
+    yellow('1. BTC')
+    yellow('2. ETH')
+    yellow('3. USDT')
+    yellow('4. All')
+    red('5. Exit to Main Menu')
     try:
-      market = raw_input('Enter your choice [1-5] : ')
+      market = raw_input(Fore.WHITE+'Enter your choice [1-5] : ')
       print (30 * '-')
       market = int(market)
       if market == 1:
@@ -464,22 +464,22 @@ def arbitrage(redis_password):
       elif market == 4:
         market = 'All'
       elif market == 5:
-        print 'Going back to Main Menu'
+        white('Going back to Main Menu')
         break
     except:
-      print 'ERROR: Please select a number!'
+      white('ERROR: Please select a number!')
       break
     try:
-      percentage = raw_input('Show from x percentage profit (decimals allowed)? [0-1000] : ')
+      percentage = raw_input(Fore.WHITE+'Show from x percentage profit (decimals allowed)? [0-1000] : ')
       print (30 * '-')
       percentage = float(percentage)
     except:
-      print 'ERROR: Please select a number!'
+      white('ERROR: Please select a number!')
       break
   
     while True:
       while count == 0:
-        print(Fore.YELLOW +'Retrieving pricing data from several API\'s, please wait...')
+        yellow('Retrieving pricing data from several API\'s, please wait...')
         time.sleep(2)
       if exchange == 'Bittrex':
         frm = 'Bitt'
@@ -508,9 +508,9 @@ def arbitrage(redis_password):
           elif entry['percentage'] > percentage:
             number += 1
             if len(entry['market']) == 6 or len(entry['market']) == 7:
-              print '{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
             else:
-              print '{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
   
       elif exchange == 'HitBTC':
         frm = 'Hitb'
@@ -539,9 +539,9 @@ def arbitrage(redis_password):
           elif entry['percentage'] > percentage:
             number += 1
             if len(entry['market']) == 6 or len(entry['market']) == 7:
-              print '{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
             else:
-              print '{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
   
       elif exchange == 'Poloniex':
         frm = 'Polo'
@@ -570,9 +570,9 @@ def arbitrage(redis_password):
           elif entry['percentage'] > percentage:
             number += 1
             if len(entry['market']) == 6 or len(entry['market']) == 7:
-              print '{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
             else:
-              print '{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
   
       elif exchange == 'Binance':
         frm = 'Bina'
@@ -601,9 +601,9 @@ def arbitrage(redis_password):
           elif entry['percentage'] > percentage:
             number += 1
             if len(entry['market']) == 6 or len(entry['market']) == 7:
-              print '{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
             else:
-              print '{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
   
       elif exchange == 'Bitfinex':
         frm = 'Bitf'
@@ -632,9 +632,9 @@ def arbitrage(redis_password):
           elif entry['percentage'] > percentage:
             number += 1
             if len(entry['market']) == 6 or len(entry['market']) == 7:
-              print '{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
             else:
-              print '{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
   
       elif exchange == 'All':
         frm = 'Bitt'
@@ -732,28 +732,28 @@ def arbitrage(redis_password):
           elif entry['percentage'] > percentage:
             number += 1
             if len(entry['market']) == 6 or len(entry['market']) == 7:
-              print '{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
             else:
-              print '{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number)
+              white('{6}.\t{0}\t{4} ({1:.8f})\t{5} ({2:.8f})\t  {3:.2f} %'.format(entry['market'], entry['ask'], entry['bid'], entry['percentage'], entry['from'], entry['to'], number))
       elif choice == 6:
         break
       if number == 0:
-        print (Fore.YELLOW +'None found that match your criteria')
+        yellow('None found that match your criteria')
       output = (Fore.YELLOW +'Refresh: r+enter | Return to Arbitrage Menu: q+enter : ')
       refresh = raw_input(output)
       refresh = str(refresh)
       if refresh == 'r':
-        print (Fore.GREEN +'Ok, refreshing in 15 seconds... (to prevent spam)')
+        green('Ok, refreshing in 15 seconds... (to prevent spam)')
         time.sleep(15)
       elif refresh == 'q':
         break
       else:
-        print 'Invalid input, refreshing in 15 seconds... (to prevent spam)'
+        white('Invalid input, refreshing in 15 seconds... (to prevent spam)')
         time.sleep(15)
       try:
         retrieve_pricing()
       except:
         break
     else:
-      print 'ERROR: Invalid number!'
+      white('ERROR: Invalid number!')
       break
