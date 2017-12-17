@@ -18,33 +18,33 @@ def menu(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis
   from takeprofit import takeprofit
   from stoplosstakeprofit import stoplosstakeprofit
   from trailingtakeprofit import trailingtakeprofit
+  from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
-  init(autoreset=True)
 
   while True:
-    print (30 * '-')
-    print(Fore.GREEN + 'P O N T S T R A D E R . C O M')
-    print (30 * '-')
-    print(Fore.YELLOW + '1. Buy')
-    print(Fore.YELLOW + '2. Sell')
-    print(Fore.YELLOW + '3. Buy and Sell')
-    print(Fore.YELLOW + '4. Balances')
-    print(Fore.YELLOW + '5. Orderbook')
-    print(Fore.YELLOW + '6. Watch coin')
-    print(Fore.YELLOW + '7. Withdraw')
-    print(Fore.YELLOW + '8. Arbitrage')
-    print(Fore.YELLOW + '9. Trailing Stop Loss (24/7)')
-    print(Fore.YELLOW + '10. Take Profit (BETA + 24/7)')
-    print(Fore.YELLOW + '11. Stop Loss + Take Profit (BETA + 24/7)')
-    print(Fore.YELLOW + '12. Trailing + Take Profit (BETA + 24/7)')
-    print(Fore.RED +'13. Exit')
-    print (30 * '-')
+    white((30 * '-'))
+    green('P O N T S T R A D E R . C O M')
+    white((30 * '-'))
+    yellow('1. Buy')
+    yellow('2. Sell')
+    yellow('3. Buy and Sell')
+    yellow('4. Balances')
+    yellow('5. Orderbook')
+    yellow('6. Watch coin')
+    yellow('7. Withdraw')
+    yellow('8. Arbitrage')
+    yellow('9. Trailing Stop Loss (24/7)')
+    yellow('10. Take Profit (BETA + 24/7)')
+    yellow('11. Stop Loss + Take Profit (BETA + 24/7)')
+    yellow('12. Trailing + Take Profit (BETA + 24/7)')
+    red('13. Exit')
+    white((30 * '-'))
 
     try:
-      choice = raw_input('Enter your choice [1-13] : ')
+      choice = raw_input(Fore.WHITE +'Enter your choice [1-13] : ')
       choice = int(choice)
     except:
-      print 'Invalid number. Try again...'
+      red('Invalid number. Try again...')
 
     # BUY
     if choice == 1:
@@ -108,28 +108,28 @@ def menu(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis
           else:
             thread_counter += 1
         if thread_counter > 0:
-          print (Fore.YELLOW +'WARNING: There are currently {0} active trade(s), are you sure you want to exit?'.format(thread_counter))
-          print(Fore.GREEN +'1. yes')
-          print(Fore.RED +'2. no')
+          yellow('WARNING: There are currently {0} active trade(s), are you sure you want to exit?'.format(thread_counter))
+          green('1. yes')
+          red('2. no')
           try:
-            yes_no = raw_input('Enter your choice [1-2] : ')
+            yes_no = raw_input(Fore.WHITE+'Enter your choice [1-2] : ')
             yes_no = int(yes_no)
           except:
-            print 'Invalid number... going back to Main Menu'
+            white('Invalid number... going back to Main Menu')
           if yes_no == 1:
-            print 'Exiting...'
+            white('Exiting...')
             sys.exit()
           elif yes_no == 2:
-            print 'Good... going back to Main Menu'
+            white('Good... going back to Main Menu')
           else:
-            print 'Invalid number... going back to Main Menu'
+            white('Invalid number... going back to Main Menu')
         else:
-          print 'Exiting...'
+          white('Exiting...')
           sys.exit()
       else:
-        print 'Exiting...'
+        white('Exiting...')
         sys.exit()
 
     # ELSE EXIT
     else:
-      print 'Invalid number. Try again...'
+      white('Invalid number. Try again...')

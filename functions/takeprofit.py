@@ -7,17 +7,17 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
   from bittrex import bittrex
   from pushover import send_pushover
   from pushbullet import send_pushbullet
+  from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
-  init(autoreset=True)
 
   try:
     r = redis.Redis(host='redis.pontstrader.com', port=6380, db=0, password=redis_password)
   except:
-    print 'Unable to connect to redis.pontstrader.com, trying redis2.pontstrader.com...'
+    white('Unable to connect to redis.pontstrader.com, trying redis2.pontstrader.com...')
     try:
       r = redis.Redis(host='redis2.pontstrader.com', port=6380, db=0, password=redis_password)
     except:
-      print 'Unable to connect to redis2.pontstrader.com... I am sorry but you can not continue now, please contact p0nts!'
+      white('Unable to connect to redis2.pontstrader.com... I am sorry but you can not continue now, please contact p0nts!')
 
   global messages
 
@@ -28,9 +28,9 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
   else:
     pass
   
-  print (25 * '-')
-  print(Fore.GREEN +'   T A K E  P R O F I T')
-  print (25 * '-')
+  white((25 * '-'))
+  green('   T A K E  P R O F I T')
+  white((25 * '-'))
   while True:
     status_update = False
     gobuy = False
@@ -41,19 +41,19 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
         if t.name.startswith('tp-'):
           thread_counter += 1
       if thread_counter > 0:
-        print (Fore.YELLOW +'There are currently {0} active tp trade(s):'.format(thread_counter))
+        yellow('There are currently {0} active tp trade(s):'.format(thread_counter))
       else:
-        print (Fore.YELLOW +'There are currently no active tp trades')
-      print 'Would you like to make another tp trade or check the status/history of your tp trades?'
-      print(Fore.GREEN +'1. New trade')
-      print(Fore.YELLOW +'2. Status / History')
-      print(Fore.RED +'3. Back to Main Menu')
+        yellow('There are currently no active tp trades')
+      white('Would you like to make another tp trade or check the status/history of your tp trades?')
+      green('1. New trade')
+      yellow('2. Status / History')
+      red('3. Back to Main Menu')
       try:
-        yes_no = raw_input('Enter your choice [1-3] : ')
+        yes_no = raw_input(Fore.WHITE+'Enter your choice [1-3] : ')
         yes_no = int(yes_no)
-        print (40 * '-')
+        white((40 * '-'))
       except:
-        print '\nInvalid number... going back to Main Menu'
+        white('\nInvalid number... going back to Main Menu')
         time.sleep(1)
         break
       if yes_no == 1:
@@ -67,20 +67,20 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
               if v.startswith('tp-'):
                 print v
             if trades == 0:
-              print (Fore.RED +'There is currently no tp trade status/history available!')
-              print (40 * '-')
-            print 'Refresh, new trade or back to Main Menu?' 
-            print(Fore.GREEN +'1. Refresh')
-            print(Fore.YELLOW +'2. New Trade')
-            print(Fore.RED +'3. Back to Main Menu')
+              red('There is currently no tp trade status/history available!')
+              white((40 * '-'))
+            white('Refresh, new trade or back to Main Menu?')
+            green('1. Refresh')
+            yellow('2. New Trade')
+            red('3. Back to Main Menu')
             go_break = False
             try:
-              yes_no = raw_input('Enter your choice [1-3] : ')
+              yes_no = raw_input(Fore.WHITE+'Enter your choice [1-3] : ')
               yes_no = int(yes_no)  
-              print (40 * '-')
+              white((40 * '-'))
             except:
               go_break = True
-              print '\nInvalid number... going back to Main Menu'
+              white('\nInvalid number... going back to Main Menu')
               time.sleep(1)
               break
             if yes_no == 1:
@@ -88,43 +88,43 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
             elif yes_no == 2:
               break
             elif yes_no == 3:
-              print '\nOk... going back to Main Menu'
+              white('\nOk... going back to Main Menu')
               time.sleep(1)
               break
             else:
               go_break = True
-              print '\nInvalid number... going back to Main Menu'
+              white('\nInvalid number... going back to Main Menu')
               time.sleep(1)
               break
           except:
-            print (Fore.RED +'\nUnable to retrieve active threads data... going back to Main Menu')
+            red('\nUnable to retrieve active threads data... going back to Main Menu')
             break
         if yes_no == 3 or go_break == True:
           break
       elif yes_no == 3:
-        print '\nOk... going back to Main Menu'
+        white('\nOk... going back to Main Menu')
         time.sleep(1)
         break
       else:
-        print '\nInvalid number... going back to Main Menu'
+        white('\nInvalid number... going back to Main Menu')
         time.sleep(1)
         break
     except:
-      print (Fore.RED +'\nUnable to retrieve active threads... there is something wrong please contact p0nts!')
+      red('\nUnable to retrieve active threads... there is something wrong please contact p0nts!')
       break
    
     try:
-      market = raw_input('Market? (e.g. BTC-NEO / ETH-LTC / USDT-OMG) : ')
+      market = raw_input(Fore.WHITE+'Market? (e.g. BTC-NEO / ETH-LTC / USDT-OMG) : ')
       market = str(market.upper())
       trade = market.split('-')[0]
       currency = market.split('-')[1]
       check_status = r.exists(market)
       if check_status != True:
-        print 'Unsupported market... going back to Main Menu'
+        white('Unsupported market... going back to Main Menu')
         time.sleep(1)
         break
     except:
-      print '\nInvalid input... going back to Main Menu'
+      white('\nInvalid input... going back to Main Menu')
       time.sleep(1)
       break
 
@@ -135,15 +135,15 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
     elif market.startswith('USDT'):
       trade = 'USDT'
     else:
-      print 'Unsupported market... going back to Main Menu'
+      white('Unsupported market... going back to Main Menu')
       time.sleep(1)
       break
   
     try:
-      value = raw_input('How much {0}? (excl. fee) : '.format(trade))
+      value = raw_input(Fore.WHITE+'How much {0}? (excl. fee) : '.format(trade))
       value = float(value)
     except:
-      print '\nInvalid number... going back to Main Menu'
+      white('\nInvalid number... going back to Main Menu')
       time.sleep(1)
       break
     else:
@@ -151,34 +151,34 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
         api = bittrex(key, secret)
         available = api.getbalance(trade)
       except:
-        print (Fore.RED +'Unable to retrieve balance information from Bittrex... going back to Main Menu')
+        red('Unable to retrieve balance information from Bittrex... going back to Main Menu')
         time.sleep(1)
         break
       else:
         if float(value) > float(available['Available']):
-          print (Fore.RED +'You have less {0} balance available than you want to trade with... going back to Main Menu'.format(trade))
+          red('You have less {0} balance available than you want to trade with... going back to Main Menu'.format(trade))
           time.sleep(1)
           break
 
     oneortwotargets = False
     if value < 0.00100000:
-      print (Fore.RED +'The minimum trade size on Bittrex is 100k sat')
+      print red('The minimum trade size on Bittrex is 100k sat')
       time.sleep(1)
       break
 #    elif value >= 0.00200000:
-#      print (Fore.GREEN +'You are trading more than or equal to 200k satoshi, which means you are eligible to use multiple sell targets due to Bittrex new policy of 100k satoshi minimum per trade.')
-#      print (Fore.GREEN +' - One sell target = sell 100% at .. satoshi')
-#      print (Fore.GREEN +' - Two sell targets = sell 50% at .. satoshi, and the other 50% at x satoshi')
-#      print (40 * '-')
-#      print (Fore.YELLOW +'Would you like to use 2 sell targets or just one?')
-#      print (Fore.GREEN +'1. yes, two')
-#      print (Fore.YELLOW +'2. no, just one')
-#      print (Fore.RED +'3. Return to Main Menu')
+#      print green('You are trading more than or equal to 200k satoshi, which means you are eligible to use multiple sell targets due to Bittrex new policy of 100k satoshi minimum per trade.')
+#      print green(' - One sell target = sell 100% at .. satoshi')
+#      print green(' - Two sell targets = sell 50% at .. satoshi, and the other 50% at x satoshi')
+#      print white((40 * '-'))
+#      print yellow('Would you like to use 2 sell targets or just one?')
+#      print green('1. yes, two')
+#      print yellow('2. no, just one')
+#      print red('3. Return to Main Menu')
 #      try:
-#        oneortwo = raw_input('Enter your choice [1-3] : ')
+#        oneortwo = raw_input(Fore.WHITE+'Enter your choice [1-3] : ')
 #        oneortwo = int(oneortwo)
 #      except:
-#        print '\nCancelled... going back to Main Menu'
+#        white('\nCancelled... going back to Main Menu')
 #        time.sleep(1)
 #        break
 #      if oneortwo == 1:
@@ -186,85 +186,85 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
 #      elif oneortwo == 2:
 #        pass
 #      elif oneortwo == 3:
-#        print 'Ok... going back to Main Menu'
+#        white('Ok... going back to Main Menu')
 #        time.sleep(1)
 #        break
 #      else:
-#        print '\nInvalid number... going back to Main Menu'
+#        white('\nInvalid number... going back to Main Menu')
 #        time.sleep(1)
 #        break
     else:
-      print (Fore.YELLOW +'You are trading with less than 200k satoshi, which means you are not eligible to use multiple sell targets due to Bittrex new policy of 100k satoshi per trade minimum, so we will stick with one.')
+      yellow('You are trading with less than 200k satoshi, which means you are not eligible to use multiple sell targets due to Bittrex new policy of 100k satoshi per trade minimum, so we will stick with one.')
 
     try:
       values = r.hmget(market, 'Ask', 'MarketName', 'BaseVolume', 'Volume', 'OpenBuyOrders', 'OpenSellOrders', 'High', 'Low', 'Last', 'Bid')
     except:
-      print 'API error: Unable to retrieve pricing information for redis.pontstrader.com... going back to Main Menu'
+      white('API error: Unable to retrieve pricing information for redis.pontstrader.com... going back to Main Menu')
       time.sleep(1)
       break
 
-    print (40 * '-')
-    print (Fore.GREEN +'   M A R K E T  I N F O R M A T I O N')
-    print (40 * '-')
-    print (Fore.YELLOW +'- Market:           {0}'.format(market))
-    print (Fore.YELLOW +'- Volume:           {0:.8f}'.format(float(values[2])))
-    print (Fore.YELLOW +'- 24H volume:       {0:.8f}'.format(float(values[3])))
-    print (Fore.YELLOW +'- Open buy orders:  {0}'.format(values[4]))
-    print (Fore.YELLOW +'- Open sell orders: {0}'.format(values[5]))
-    print (Fore.YELLOW +'- 24H high:         {0:.8f}'.format(float(values[6])))
-    print (Fore.YELLOW +'- 24H low:          {0:.8f}'.format(float(values[7])))
-    print (Fore.YELLOW +'- Last:             {0:.8f}'.format(float(values[8])))
-    print (Fore.YELLOW +'- Ask:              {0:.8f}'.format(float(values[0])))
-    print (Fore.YELLOW +'- Bid:              {0:.8f}'.format(float(values[9])))
-    print (40 * '-')
+    white((40 * '-'))
+    green('   M A R K E T  I N F O R M A T I O N')
+    white((40 * '-'))
+    yellow('- Market:           {0}'.format(market))
+    yellow('- Volume:           {0:.8f}'.format(float(values[2])))
+    yellow('- 24H volume:       {0:.8f}'.format(float(values[3])))
+    yellow('- Open buy orders:  {0}'.format(values[4]))
+    yellow('- Open sell orders: {0}'.format(values[5]))
+    yellow('- 24H high:         {0:.8f}'.format(float(values[6])))
+    yellow('- 24H low:          {0:.8f}'.format(float(values[7])))
+    yellow('- Last:             {0:.8f}'.format(float(values[8])))
+    yellow('- Ask:              {0:.8f}'.format(float(values[0])))
+    yellow('- Bid:              {0:.8f}'.format(float(values[9])))
+    white((40 * '-'))
 
     if oneortwotargets == True:
       pass
 #      try:
-#        target1 = raw_input('Target 1? 50% of the trade value will be sold here [eg. 0.00436] : ')
+#        target1 = raw_input(Fore.WHITE+'Target 1? 50% of the trade value will be sold here [eg. 0.00436] : ')
 #        target1 = float(target1)
 #      except:
-#        print '\nInvalid number... going back to Main Menu'
+#        white('\nInvalid number... going back to Main Menu')
 #        time.sleep(1)
 #        break
 #
 #      try:
-#        target2 = raw_input('Target 2? 50% of the trade value will be sold here [eg. 0.00436] : ')
+#        target2 = raw_input(Fore.WHIT+'Target 2? 50% of the trade value will be sold here [eg. 0.00436] : ')
 #        target2 = float(target2)
 #      except:
-#        print '\nInvalid number... going back to Main Menu'
+#        white('\nInvalid number... going back to Main Menu')
 #        time.sleep(1)
 #        break
-#      print (40 * '-')
-#      print (Fore.GREEN +'   B U Y  I N F O R M A T I O N')
-#      print (Fore.YELLOW +'- Buyprice:               {0:.8f}'.format(float(values[0])))
-#      print (Fore.YELLOW +'- Target 1:               {0:.8f}'.format(float(target1)))
-#      print (Fore.YELLOW +'- Target 2:               {0:.8f}'.format(float(target2)))
-#      print (Fore.YELLOW +'Because the price could have changed during your input, the buyprice may differ a little from the above prices!')
+#      white((40 * '-'))
+#      green('   B U Y  I N F O R M A T I O N')
+#      yellow('- Buyprice:               {0:.8f}'.format(float(values[0])))
+#      yellow('- Target 1:               {0:.8f}'.format(float(target1)))
+#      yellow('- Target 2:               {0:.8f}'.format(float(target2)))
+#      yellow('Because the price could have changed during your input, the buyprice may differ a little from the above prices!')
     else:
       try:
-        target = raw_input('Target? 100% of the trade value will be sold here [eg. 0.00436] : ')
+        target = raw_input(Fore.WHITE+'Target? 100% of the trade value will be sold here [eg. 0.00436] : ')
         target = float(target)
       except:
-        print '\nInvalid number... going back to Main Menu'
+        white('\nInvalid number... going back to Main Menu')
         time.sleep(1)
         break
-      print (40 * '-')
-      print (Fore.GREEN +'   B U Y  I N F O R M A T I O N')
-      print (Fore.YELLOW +'- Buyprice:               {0:.8f}'.format(float(values[0])))
-      print (Fore.YELLOW +'- Target:                 {0:.8f}'.format(float(target)))
-      print (40 * '-')
-      print (Fore.YELLOW +'Because the price could have changed during your input, the buyprice may differ a little from the above prices!')
+      white((40 * '-'))
+      green('   B U Y  I N F O R M A T I O N')
+      yellow('- Buyprice:               {0:.8f}'.format(float(values[0])))
+      yellow('- Target:                 {0:.8f}'.format(float(target)))
+      white((40 * '-'))
+      yellow('Because the price could have changed during your input, the buyprice may differ a little from the above prices!')
     
-    print (40 * '-')
-    print 'Proceed?'
-    print (Fore.GREEN +'1. yes')
-    print (Fore.RED +'2. no, return to Main Menu')
+    white((40 * '-'))
+    white('Proceed?')
+    green('1. yes')
+    red('2. no, return to Main Menu')
     try:
-      proceed = raw_input('Enter your choice [1-2] : ')
+      proceed = raw_input(Fore.WHITE+'Enter your choice [1-2] : ')
       proceed = int(proceed)
     except:
-      print '\nCancelled... going back to Main Menu'
+      white('\nCancelled... going back to Main Menu')
       time.sleep(1)
       break
     if proceed == 1:
@@ -287,19 +287,19 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
             values = r.hmget(market, 'Ask')
             ask = float(values[0])
             amount = float(value) / float(ask)
-            print (Fore.YELLOW +'Waiting for the volume to rise on lowest Ask to buy all for the same price.')
+            yellow('Waiting for the volume to rise on lowest Ask to buy all for the same price.')
           gobuy = True
           break
       except:
-        print 'API error: Unable to create a buyorder... going back to Main Menu'
+        white('API error: Unable to create a buyorder... going back to Main Menu')
         time.sleep(1)
         break
     elif proceed == 2:
-      print 'Ok... going back to Main Menu'
+      white('Ok... going back to Main Menu')
       time.sleep(1)
       break
     else:
-      print '\nInvalid number... going back to Main Menu'
+      white('\nInvalid number... going back to Main Menu')
       time.sleep(1)
       break
 
@@ -404,7 +404,7 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
         thread = threading.Thread(name=threadname, target=start_thread_single,args=(market, currency, amount, ask, target))
       thread.daemon = True
       thread.start()
-      print (Fore.GREEN +'Made a buy order, to check its status go to the Stop Loss Take Profit menu again... going back to Main Menu in 2 seconds')
+      green('Made a buy order, to check its status go to the Stop Loss Take Profit menu again... going back to Main Menu in 2 seconds')
       time.sleep(2)
     except:
-      print (Fore.RED +'Unable to start thread... there is something wrong please contact p0nts!')
+      red('Unable to start thread... there is something wrong please contact p0nts!')
