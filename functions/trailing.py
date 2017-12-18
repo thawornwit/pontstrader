@@ -9,6 +9,7 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
   from pushbullet import send_pushbullet
   from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
+  init()
 
   try:
     r = redis.Redis(host='redis.pontstrader.com', port=6380, db=0, password=redis_password)

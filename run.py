@@ -30,6 +30,7 @@ except ImportError:
 
 try:
   from colorama import Fore, Back, Style, init
+  init()
 except ImportError:
   print 'python-colorama is not installed, please check the docs!'
   print 'https://github.com/p0nt/pontstrader'

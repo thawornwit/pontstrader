@@ -8,6 +8,7 @@ def orderbook(key, secret, redis_password):
   from bittrex import bittrex
   from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
+  init()
 
   try:
     r = redis.Redis(host='redis.pontstrader.com', port=6380, db=0, password=redis_password)

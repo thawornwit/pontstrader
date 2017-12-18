@@ -8,6 +8,7 @@ def withdraw(key, secret):
   from bittrex import bittrex
   from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
+  init()
   
   while True:
     try:

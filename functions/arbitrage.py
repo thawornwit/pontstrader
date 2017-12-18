@@ -7,6 +7,7 @@ def arbitrage(redis_password):
   from time import gmtime, strftime
   from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
+  init()
   try:
     r_bittrex = redis.Redis(host='redis.pontstrader.com', port=6380, db=0, password=redis_password)
     r_hitbtc = redis.Redis(host='redis.pontstrader.com', port=6380, db=1, password=redis_password)

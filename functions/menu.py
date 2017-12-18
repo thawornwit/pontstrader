@@ -20,6 +20,7 @@ def menu(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis
   from trailingtakeprofit import trailingtakeprofit
   from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
+  init()
 
   while True:
     white((30 * '-'))
