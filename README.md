@@ -24,7 +24,7 @@ Index:
 
 1. Buy cryptocurrencies (Bittrex)
 2. Sell cryptocurrencies (Bittrex)
-3. Buy cryptocurrencies and immidiatly add a sell order with a multiplier (Bittrex)
+3. Buy cryptocurrencies and immediately add a sell order with a multiplier (Bittrex)
 4. Check their balances (Bittrex)
 5. Check their orderbook (Bittrex)
 6. Watch a cryptocurrencies in real-time 0.5 seconds (Bittrex)
@@ -35,7 +35,7 @@ Index:
 11. Stop Loss + Take Profit creates both stop loss and take profit targets at once (Bittrex)
 12. Trailing + Take Profit same as function 9 but only sells in profit (Bittrex)
 
-Some of the above functions require the script to run on a system which is on 24/7, this is due to the fact the script is actively (every 0.5 seconds) quering the pontstrader redis database for price changes.
+Some of the above functions require the script to run on a system which is online 24/7, this is due to the fact the script is actively (every 0.5 seconds) quering the pontstrader redis database for price changes.
 Currently the following functions require a 24/7 running system:
 
 - Trailing Stop Loss
@@ -60,7 +60,7 @@ The buy function allows you to buy any coin on any market supported on the Bittr
   - Price information will be shown, also shows you how much you can buy at current Last, Ask and Bid rates
   - You are asked to choose to buy for Last, Ask, Bid or Custom
   - Choose the amount you would like to buy
-  - Recheck your input and confirm the buy if everything looks find
+  - Recheck your input and confirm the buy if everything looks fine
 <img width="25%" height="25%" src="img/buy.png">
 
   
@@ -73,7 +73,7 @@ The sell function allows you to sell any coin on any market supported on the Bit
   - Price information will be shown
   - You are asked to choose to sell for Last, Ask, Bid or Custom
   - Choose the amount you would like to sell
-  - Recheck your input and confirm the sell if everything looks find
+  - Recheck your input and confirm the sell if everything looks fine
 <img width="25%" height="25%" src="img/sell.png">
 
 #### 3. Buy and Sell
@@ -125,7 +125,7 @@ Upon selling a coin, either with loss or profit... a push notification will be s
 Please keep in mind this function requires the system running this to be on 24/7, because this script will look for price differences every 0.5 seconds and is not able to do this when its not on. A recommendation will be a power efficient raspberry pi with for example Raspbian, you can run pontstrader is a screen or tmux session.
 
 Small example:
-If you set a trailing stop loss treshold to 10% your trade will immidiatly be sold when it falls 10% straight away, but if it climbs to 5% profit and afterwards falls 10% it will stop at -5% instead of minus 10%, this results in less loss.
+If you set a trailing stop loss treshold to 10% your trade will immediately be sold when it falls 10% straight away, but if it climbs to 5% profit and afterwards falls 10% it will stop at -5% instead of minus 10%, this results in less loss.
 If the price starts climbing and it goes towards 20%, the trailing stop loss will be set to 10%. When it starts falling it will sell on 10% which results in less risk and restless sleep for you :)
 
 <img width="25%" height="25%" src="http://sassyfinance.com/wp-content/uploads/2014/01/TrailingStop.png">
@@ -133,9 +133,9 @@ If the price starts climbing and it goes towards 20%, the trailing stop loss wil
 <img width="25%" height="25%" src="img/trailing2.png">
 
 #### 10. Take Profit (Requires 24/7 running device)
-The take profit function is actually the same as the Sell option, only the difference is that this script will keep track of the sell and notify you by a push message when the sell have happend.
+The take profit function is actually the same as the Sell option, only the difference is that this script will keep track of the sell and notify you by a push message when the sell has happend.
 
-Because the script is keeping track of the sell, you will need to run this on a device which is on 24/7.
+Because the script is keeping track of the sell, you will need to run this on a device which is online 24/7.
 
 <img width="25%" height="25%" src="img/takeprofit1.png">
 <img width="25%" height="25%" src="img/takeprofit2.png">
