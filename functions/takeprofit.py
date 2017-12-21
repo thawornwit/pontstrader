@@ -9,6 +9,7 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
   from pushbullet import send_pushbullet
   from colors import white, red, green, yellow
   from colorama import Fore, Back, Style, init
+  init()
 
   try:
     r = redis.Redis(host='redis.pontstrader.com', port=6380, db=0, password=redis_password)
@@ -19,12 +20,20 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
     except:
       white('Unable to connect to redis2.pontstrader.com... I am sorry but you can not continue now, please contact p0nts!')
 
-  global messages
+  global tp_messages
+  global tp_messages_done
 
   try:
-    messages
+    tp_messages
   except NameError:
-    messages = {}
+    tp_messages = {}
+  else:
+    pass
+
+  try:
+    tp_messages_done
+  except NameError:
+    tp_messages_done = {}
   else:
     pass
   
@@ -44,12 +53,13 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
         yellow('There are currently {0} active tp trade(s):'.format(thread_counter))
       else:
         yellow('There are currently no active tp trades')
-      white('Would you like to make another tp trade or check the status/history of your tp trades?')
+      white('Would you like to make another tp trade, check active trades or check history of your tp trades?')
       green('1. New trade')
-      yellow('2. Status / History')
-      red('3. Back to Main Menu')
+      yellow('2. Active trades')
+      yellow('3. History')
+      red('4. Back to Main Menu')
       try:
-        yes_no = raw_input(Fore.WHITE+'Enter your choice [1-3] : ')
+        yes_no = raw_input(Fore.WHITE+'Enter your choice [1-4] : ')
         yes_no = int(yes_no)
         white((40 * '-'))
       except:
@@ -62,12 +72,12 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
         while True:
           try:
             trades = 0
-            for k, v in messages.iteritems():
+            for k, v in tp_messages.iteritems():
               trades += 1
               if v.startswith('tp-'):
                 print v
             if trades == 0:
-              red('There is currently no tp trade status/history available!')
+              red('There is currently no tp trade status available!')
               white((40 * '-'))
             white('Refresh, new trade or back to Main Menu?')
             green('1. Refresh')
@@ -102,6 +112,49 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
         if yes_no == 3 or go_break == True:
           break
       elif yes_no == 3:
+        while True:
+          try:
+            trades = 0
+            for k, v in tp_messages_done.iteritems():
+              trades += 1
+              if v.startswith('tp-'):
+                print v
+            if trades == 0:
+              red('There is currently no tp trade history available!')
+              white((40 * '-'))
+            white('Refresh, new trade or back to Main Menu?')
+            green('1. Refresh')
+            yellow('2. New Trade')
+            red('3. Back to Main Menu')
+            go_break = False
+            try:
+              yes_no = raw_input(Fore.WHITE+'Enter your choice [1-3] : ')
+              yes_no = int(yes_no)
+              white((40 * '-'))
+            except:
+              go_break = True
+              white('\nInvalid number... going back to Main Menu')
+              time.sleep(1)
+              break
+            if yes_no == 1:
+              pass
+            elif yes_no == 2:
+              break
+            elif yes_no == 3:
+              white('\nOk... going back to Main Menu')
+              time.sleep(1)
+              break
+            else:
+              go_break = True
+              white('\nInvalid number... going back to Main Menu')
+              time.sleep(1)
+              break
+          except:
+            red('\nUnable to retrieve active threads data... going back to Main Menu')
+            break
+        if yes_no == 3 or go_break == True:
+          break
+      elif yes_no == 4:
         white('\nOk... going back to Main Menu')
         time.sleep(1)
         break
@@ -306,7 +359,7 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
   if gobuy == True:
     def start_thread_single(market, currency, amount, ask, target):
       time.sleep(1)
-      global messages
+      global tp_messages
       thread_name = threading.current_thread().name
       done = False
       while True:
@@ -316,7 +369,7 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
           buy = api.buylimit(market, amount, ask)
         except:
           message = 'Bittrex API error, unable to buy: {0}'.format(buy)
-          messages[thread_name] = message
+          tp_messages[thread_name] = message
           send_pushover(pushover_user, pushover_app, message)
           send_pushbullet(pushbullet_token, message)
           break
@@ -329,13 +382,13 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
             buyorder = api.getorder(uuid=buy_uuid)
           except:
             message = 'Bittrex API error, unable to check the buyorder: {0}'.format(buyorder)
-            messages[thread_name] = message
+            tp_messages[thread_name] = message
           else:
             time.sleep(0.5)
             if buyorder['IsOpen'] == True:
               while buyorder['IsOpen'] == True:
                 message = '{0}: Made a buyorder, waiting until it is filled! Remaining: {1:.8f} {2}'.format(thread_name, buyorder['QuantityRemaining'], currency)
-                messages[thread_name] = message
+                tp_messages[thread_name] = message
                 if push_send == False:
                   try:
                     send_pushover(pushover_user, pushover_app, message)
@@ -343,12 +396,12 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
                     push_send = True
                   except:
                     message = 'Unable to send push notification with the buyorder status'
-                    messages[thread_name] = message
+                    tp_messages[thread_name] = message
                 try:
                   buyorder = api.getorder(uuid=buy_uuid)
                 except:
                   message = 'Bittrex API error, unable to check the buyorder: {0}'.format(buyorder)
-                  messages[thread_name] = message
+                  tp_messages[thread_name] = message
                   pass
                 time.sleep(10)
               buyprice = float(ask)
@@ -360,7 +413,7 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
               ask = float(values[0])
             except:
               message = 'Unable to retrieve data from redis.pontstrader.com, trying to recover...'
-              messages[thread_name] = message
+              tp_messages[thread_name] = message
             else:
               profit_percentage = 100 * (float(ask) - float(buyprice)) / float(buyprice)
               if float(ask) >= float(target):
@@ -371,28 +424,30 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
                   sellorder = api.getorder(uuid=sell_uuid)
                   while sellorder['IsOpen'] == True:
                     message = '{0}: Sell target triggered, waiting until the sell order is completely filled! Remaining: {1:.8f}'.format(thread_name, sellorder['QuantityRemaining'])
-                    messages[thread_name] = message
+                    tp_messages[thread_name] = message
                     try:
                       sellorder = api.getorder(uuid=sell_uuid)
                     except:
                       pass
                     time.sleep(2)
                   message = '{0}: {1} SOLD (Target) | Buy price {2:.8f} | Sell price {3:.8f} | Profit {4:.2f}% (excl. fee)'.format(thread_name, currency, buyprice, target, profit_percentage)
-                  messages[thread_name] = message
+                  del tp_messages[thread_name]
+                  tp_messages_done[thread_name] = message
                   send_pushover(pushover_user, pushover_app, message)
                   send_pushbullet(pushbullet_token, message)
                   done = True
                   break
                 except:
                   message = '{0}: API error: Was unable to create the sellorder... it was cancelled due to:\n{1}'.format(thread_name, sell)
-                  messages[thread_name] = message
+                  del tp_messages[thread_name]
+                  tp_messages_done[thread_name] = message
                   send_pushover(pushover_user, pushover_app, message)
                   send_pushbullet(pushbullet_token, message)
                   done = True
                   break
               else:
                 message = '{0}: {1} | Buy price {2:.8f} | Price {3:.8f} | Target: {4:.8f} | Profit {5:.2f}% (excl. fee)'.format(thread_name, currency, buyprice, ask, target, profit_percentage)
-                messages[thread_name] = message
+                tp_messages[thread_name] = message
         if done == True:
           break
     try:
