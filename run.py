@@ -56,7 +56,7 @@ if not file_exists:
     bittrex_secret = raw_input(Fore.WHITE+'Enter your Bittrex API Secret : ')
     bittrex_secret = str(bittrex_secret)
     yellow('Step 2: Push notifications')
-    yellow('Pushover/Pushbullet allows you to recieve push notifications on your phone for the Trailing Stop feature and future features.')
+    yellow('Pushover/Pushbullet allows you to receive push notifications on your phone for the Trailing Stop feature and future features.')
     white('Would you like to enable Pushover or Pushbullet?')
     white('1. Pushover')
     white('2. Pushbullet')
