@@ -20,12 +20,20 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
     except:
       white('Unable to connect to redis2.pontstrader.com... I am sorry but you can not continue now, please contact p0nts!')
 
-  global messages
+  global tsl_messages
+  global tsl_messages_done
 
   try:
-    messages
+    tsl_messages
   except NameError:
-    messages = {}
+    tsl_messages = {}
+  else:
+    pass
+
+  try:
+    tsl_messages_done
+  except NameError:
+    tsl_messages_done = {}
   else:
     pass
   
@@ -45,12 +53,13 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
         yellow('There are currently {0} active tsl trade(s):'.format(thread_counter))
       else:
         yellow('There are currently no active tsl trades')
-      white('Would you like to make another tsl trade or check the status/history of your tsl trades?')
+      white('Would you like to make another tsl trade, check active trades or check history of your tsl trades?')
       green('1. New trade')
-      yellow('2. Status / History')
-      red('3. Back to Main Menu')
+      yellow('2. Active trades')
+      yellow('3. History')
+      red('4. Back to Main Menu')
       try:
-        yes_no = raw_input(Fore.WHITE+'Enter your choice [1-3] : ')
+        yes_no = raw_input(Fore.WHITE+'Enter your choice [1-4] : ')
         yes_no = int(yes_no)
         white((30 * '-'))
       except:
@@ -63,12 +72,12 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
         while True:
           try:
             trades = 0
-            for k, v in messages.iteritems():
+            for k, v in tsl_messages.iteritems():
               trades += 1
               if v.startswith('tsl-'):
                 print v
             if trades == 0:
-              red('There is currently no tsl trade status/history available!')
+              red('There is currently no tsl trade status available!')
               white((30 * '-'))
             white('Refresh, new trade or back to Main Menu?')
             green('1. Refresh')
@@ -103,6 +112,49 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
         if yes_no == 3 or go_break == True:
           break
       elif yes_no == 3:
+        while True:
+          try:
+            trades = 0
+            for k, v in tsl_messages_done.iteritems():
+              trades += 1
+              if v.startswith('tsl-'):
+                print v
+            if trades == 0:
+              red('There is currently no tsl trade history available!')
+              white((30 * '-'))
+            white('Refresh, new trade or back to Main Menu?')
+            green('1. Refresh')
+            yellow('2. New Trade')
+            red('3. Back to Main Menu')
+            go_break = False
+            try:
+              yes_no = raw_input(Fore.WHITE+'Enter your choice [1-3] : ')
+              yes_no = int(yes_no)
+              white((30 * '-'))
+            except:
+              go_break = True
+              white('\nInvalid number... going back to Main Menu')
+              time.sleep(1)
+              break
+            if yes_no == 1:
+              pass
+            elif yes_no == 2:
+              break
+            elif yes_no == 3:
+              white('\nOk... going back to Main Menu')
+              time.sleep(1)
+              break
+            else:
+              go_break = True
+              white('\nInvalid number... going back to Main Menu')
+              time.sleep(1)
+              break
+          except:
+            red('\nUnable to retrieve active threads data... going back to Main Menu')
+            break
+        if yes_no == 3 or go_break == True:
+          break
+      elif yes_no == 4:
         white('\nOk... going back to Main Menu')
         time.sleep(1)
         break
@@ -236,7 +288,7 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
   if gobuy == True:
     def start_thread(market, currency, amount, ask, trailing):
       time.sleep(1)
-      global messages
+      global tsl_messages
       thread_name = threading.current_thread().name
       while True:
         try:
@@ -248,7 +300,7 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
           push_send = False
           while buyorder['IsOpen'] == True:
             message = '{0}: Made a buyorder, waiting until it is filled! Remaining: {1:.8f} {2}'.format(thread_name, buyorder['QuantityRemaining'], currency)
-            messages[thread_name] = message
+            tsl_messages[thread_name] = message
             if push_send == False:
               send_pushover(pushover_user, pushover_app, message)
               send_pushbullet(pushbullet_token, message)
@@ -262,7 +314,7 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
           lastprice = 0
         except:
           message = '{0}: API error: Was unable to create the buyorder... it was cancelled due to:\n{1}'.format(thread_name, buy)
-          messages[thread_name] = message
+          tsl_messages[thread_name] = message
           send_pushover(pushover_user, pushover_app, message)
           send_pushbullet(pushbullet_token, message)
           break
@@ -273,7 +325,7 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
             ask = float(values[0])
           except:
             message = 'Unable to retrieve data from redis.pontstrader.com, trying to recover...'
-            messages[thread_name] = message
+            tsl_messages[thread_name] = message
           else:
             percentage = 100 * (float(ask) - float(buyprice)) / float(buyprice)
             trailing_percentage = float(ask) / 100 * float(trailing)
@@ -284,16 +336,16 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
                   trailing_stop_loss = float(ask) - float(trailing_percentage)
                   stop_loss_percentage = 100 * (float(trailing_stop_loss) - float(buyprice)) / float(buyprice)
                   message = '{0}: {1} | Buy price {2:.8f} | Price {3:.8f} | Profit: {4:.2f}% | Stop Loss: {5:.8f} ({6:.2f}%)'.format(thread_name, currency, float(buyprice), float(ask), float(percentage), float(trailing_stop_loss), float(stop_loss_percentage))
-                  messages[thread_name] = message
+                  tsl_messages[thread_name] = message
                 else:
                   message = '{0}: {1} | Buy price {2:.8f} | Price {3:.8f} | Profit: {4:.2f}% | Stop Loss: {5:.8f} ({6:.2f}%)'.format(thread_name, currency, float(buyprice), float(ask), float(percentage), float(trailing_stop_loss), float(stop_loss_percentage))
-                  messages[thread_name] = message
+                  tsl_messages[thread_name] = message
               else:
                 message = '{0}: {1} | Buy price {2:.8f} | Price {3:.8f} | Profit: {4:.2f}% | Stop Loss: {5:.8f} ({6:.2f}%)'.format(thread_name, currency, float(buyprice), float(ask), float(percentage), float(trailing_stop_loss), float(stop_loss_percentage))
-                messages[thread_name] = message
+                tsl_messages[thread_name] = message
             elif float(ask) < float(buyprice) and float(ask) != float(lastprice):
               message = '{0}: {1} | Buy price {2:.8f} | Price {3:.8f} | Profit: {4:.2f}% | Stop Loss: {5:.8f} ({6:.2f}%)'.format(thread_name, currency, float(buyprice), float(ask), float(percentage), float(trailing_stop_loss), float(stop_loss_percentage))
-              messages[thread_name] = message
+              tsl_messages[thread_name] = message
             elif float(ask) == float(buyprice) and float(ask) != float(lastprice):
               pass
             lastprice = float(ask)
@@ -305,20 +357,22 @@ def trailing(key, secret, pushover_user, pushover_app, pushbullet_token, redis_p
           sellorder = api.getorder(uuid=sell_uuid)
           while sellorder['IsOpen'] == True:
             message = '{0}: Stop Loss triggered, waiting until the sell order is completely filled! Remaining: {1:.8f}'.format(thread_name, sellorder['QuantityRemaining'])
-            messages[thread_name] = message
+            tsl_messages[thread_name] = message
             try:
               sellorder = api.getorder(uuid=sell_uuid)
             except:
               pass
             time.sleep(2)
           message = '{0}: {1} SOLD | Buy price {2:.8f} | Sell price {3:.8f} | Profit {4:.2f}% (excl. fee)'.format(thread_name, currency, buyprice, trailing_stop_loss, profit_percentage)
-          messages[thread_name] = message
+          del tsl_messages[thread_name]
+          tsl_messages_done[thread_name] = message
           send_pushover(pushover_user, pushover_app, message)
           send_pushbullet(pushbullet_token, message)
           break
         except:
           message = '{0}: API error: Was unable to create the sellorder... it was cancelled due to:\n{1}'.format(thread_name, sell)
-          messages[thread_name] = message
+          del tsl_messages[thread_name]
+          tsl_messages_done[thread_name] = message
           send_pushover(pushover_user, pushover_app, message)
           send_pushbullet(pushbullet_token, message)
           break
