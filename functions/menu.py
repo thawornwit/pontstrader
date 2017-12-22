@@ -13,6 +13,7 @@ def menu(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis
   from orderbook import orderbook
   from watch import watch
   from withdraw import withdraw
+  from deposit import deposit
   from arbitrage import arbitrage
   from trailing import trailing
   from takeprofit import takeprofit
@@ -33,16 +34,17 @@ def menu(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis
     yellow('5. Orderbook')
     yellow('6. Watch coin')
     yellow('7. Withdraw')
-    yellow('8. Arbitrage')
-    yellow('9. Trailing Stop Loss (24/7)')
-    yellow('10. Take Profit (BETA + 24/7)')
-    yellow('11. Stop Loss + Take Profit (BETA + 24/7)')
-    yellow('12. Trailing + Take Profit (BETA + 24/7)')
-    red('13. Exit')
+    yellow('8. Deposit')
+    yellow('9. Arbitrage')
+    yellow('10. Trailing Stop Loss (24/7)')
+    yellow('11. Take Profit (BETA + 24/7)')
+    yellow('12. Stop Loss + Take Profit (BETA + 24/7)')
+    yellow('13. Trailing + Take Profit (BETA + 24/7)')
+    red('14. Exit')
     white((30 * '-'))
 
     try:
-      choice = raw_input(Fore.WHITE +'Enter your choice [1-13] : ')
+      choice = raw_input(Fore.WHITE +'Enter your choice [1-14] : ')
       choice = int(choice)
     except:
       red('Invalid number. Try again...')
@@ -75,28 +77,32 @@ def menu(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis
     elif choice == 7:
       withdraw(apikey, apisecret)
 
-    # ARBITRAGE
+    # DEPOSIT
     elif choice == 8:
+      deposit(apikey, apisecret)
+
+    # ARBITRAGE
+    elif choice == 9:
       arbitrage(redis_password)
 
     # TRAILING
-    elif choice == 9:
+    elif choice == 10:
       trailing(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis_password)
 
     # TAKE PROFIT
-    elif choice == 10:
+    elif choice == 11:
       takeprofit(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis_password)
 
     # STOP LOSS TAKE PROFIT
-    elif choice == 11:
+    elif choice == 12:
       stoplosstakeprofit(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis_password)
 
     # TRAILING TAKE PROFIT
-    elif choice == 12:
+    elif choice == 13:
       trailingtakeprofit(apikey, apisecret, pushover_user, pushover_app, pushbullet_token, redis_password)
 
     # EXIT
-    elif choice == 13:
+    elif choice == 14:
       count = threading.activeCount()
       if count > 1:
         threads = threading.enumerate()

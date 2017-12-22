@@ -29,6 +29,7 @@ Index:
 5. Check their orderbook (Bittrex)
 6. Watch a cryptocurrencies in real-time 0.5 seconds (Bittrex)
 7. Withdraw cryptocurrencies (Bittrex)
+8. Deposit cryptocurrencies (Bittrex)
 8. Check arbitrage oppertunaties between exchanges (Bittrex, HitBTC, Binance, Bitfinex, Poloniex)
 9. Use Trailing Stop Loss, which is normally not possible on most exchanges (Bittrex)
 10. Take Profit function that sells on configured target and sends push notification (Bittrex)
@@ -109,7 +110,10 @@ Dont forget to add a Payment ID if required.
 
 <img width="25%" height="25%" src="img/withdraw.png">
 
-#### 8. Arbitrage
+#### 8. Deposit
+Retrieve deposit address from the Bittrex API
+
+#### 9. Arbitrage
 The arbitrage function allows you to show price differences between 5 different exchanges, currently supported exchanges are:
 Bittrex, HitBTC, Binance, Bitfinex and Poloniex
   - You can choose to show oppertunaties only from a specific market
@@ -117,7 +121,7 @@ Bittrex, HitBTC, Binance, Bitfinex and Poloniex
 
 <img width="25%" height="25%" src="img/arbitrage.png">
 
-#### 9. Trailing Stop Loss (Requires 24/7 running device)
+#### 10. Trailing Stop Loss (Requires 24/7 running device)
 The trailing stop loss function allows you to trade currencies on a more advanced matter, if you do not know what trailing stop loss is please have a look at: https://www.investopedia.com/articles/trading/08/trailing-stop-loss.asp
 
 Upon selling a coin, either with loss or profit... a push notification will be send towards your phone if you've enabled pushover or pushbullet (which is awesome btw!)
@@ -132,7 +136,7 @@ If the price starts climbing and it goes towards 20%, the trailing stop loss wil
 <img width="25%" height="25%" src="img/trailing1.png">
 <img width="25%" height="25%" src="img/trailing2.png">
 
-#### 10. Take Profit (Requires 24/7 running device)
+#### 11. Take Profit (Requires 24/7 running device)
 The take profit function is actually the same as the Sell option, only the difference is that this script will keep track of the sell and notify you by a push message when the sell has happend.
 
 Because the script is keeping track of the sell, you will need to run this on a device which is online 24/7.
@@ -140,7 +144,7 @@ Because the script is keeping track of the sell, you will need to run this on a 
 <img width="25%" height="25%" src="img/takeprofit1.png">
 <img width="25%" height="25%" src="img/takeprofit2.png">
 
-#### 11. Stop Loss + Take Profit (Requires 24/7 running device)
+#### 12. Stop Loss + Take Profit (Requires 24/7 running device)
 The take profit function is actually the same as the Sell option, including a stop loss function which allows you to set not only one but both of them.
 
 Same as the other 24/7 functions this function will notify you on changes through a push message.
@@ -148,7 +152,7 @@ Same as the other 24/7 functions this function will notify you on changes throug
 <img width="25%" height="25%" src="img/stoplosstakeprofit1.png">
 <img width="25%" height="25%" src="img/stoplosstakeprofit2.png">
 
-#### 12. Trailing + Take Profit (Requires 24/7 running device)
+#### 13. Trailing + Take Profit (Requires 24/7 running device)
 This function is the same as the trailing stop loss function, the only difference is... is that this function will never ever sell your coin when its down, it will only trigger a sell when the trailing stop loss threshold is in profit.
 
 <img width="25%" height="25%" src="img/trailingtakeprofit1.png">
