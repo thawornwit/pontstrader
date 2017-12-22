@@ -7,8 +7,6 @@ from functions import *
 import signal
 import time
 
-# bla
-
 def sigint_handler(signum, frame):
   print 'Stop pressing CTRL+C!'
 
