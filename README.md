@@ -113,6 +113,8 @@ Dont forget to add a Payment ID if required.
 #### 8. Deposit
 Retrieve deposit address from the Bittrex API
 
+<img width="25%" height="25%" src="img/deposit.png">
+
 #### 9. Arbitrage
 The arbitrage function allows you to show price differences between 5 different exchanges, currently supported exchanges are:
 Bittrex, HitBTC, Binance, Bitfinex and Poloniex
