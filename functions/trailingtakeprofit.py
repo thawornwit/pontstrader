@@ -180,6 +180,15 @@ def trailingtakeprofit(key, secret, pushover_user, pushover_app, pushbullet_toke
       white('\nInvalid input... going back to Main Menu')
       time.sleep(1)
       break
+
+    try:
+      api = bittrex(key, secret)
+      available = api.getbalance(trade)
+      yellow('You have {0:.8f} {1} available in total'.format(available['Available'], trade))
+    except:
+      print 'Unable to retrieve available {0} balance from Bittrex... try again later'.format(trade)
+      time.sleep(1)
+      break
   
     try:
       value = raw_input(Fore.WHITE+'How much {0}? (excl. fee) : '.format(trade))
@@ -209,7 +218,6 @@ def trailingtakeprofit(key, secret, pushover_user, pushover_app, pushbullet_toke
       break
     
     try:
-      api = bittrex(key, secret)
       values = r.hmget(market, 'Ask', 'MarketName', 'BaseVolume', 'Volume', 'OpenBuyOrders', 'OpenSellOrders', 'High', 'Low', 'Last', 'Bid')
       available = api.getbalance(trade)
       price = float(values[0])
