@@ -191,6 +191,15 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
       white('Unsupported market... going back to Main Menu')
       time.sleep(1)
       break
+
+    try:
+      api = bittrex(key, secret)
+      available = api.getbalance(trade)
+      yellow('You have {0:.8f} {1} available in total'.format(available['Available'], trade))
+    except:
+      print 'Unable to retrieve available {0} balance from Bittrex... try again later'.format(trade)
+      time.sleep(1)
+      break
   
     try:
       value = raw_input(Fore.WHITE+'How much {0}? (excl. fee) : '.format(trade))
@@ -201,7 +210,6 @@ def takeprofit(key, secret, pushover_user, pushover_app, pushbullet_token, redis
       break
     else:
       try:
-        api = bittrex(key, secret)
         available = api.getbalance(trade)
       except:
         red('Unable to retrieve balance information from Bittrex... going back to Main Menu')
